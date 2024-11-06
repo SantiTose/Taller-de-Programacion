@@ -1,0 +1,93 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ej2
+procesos
+  proceso Izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin  
+  proceso tomarFlores(ES flores:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina    
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso tomarPapeles(ES papeles:numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      papeles:=papeles+1
+  fin
+  proceso evaluar(E pap:numero; E flo:numero; ES ok:boolean)
+  comenzar
+    ok:= F
+    si flo>pap
+      ok:=V
+  fin
+  proceso hacerEscalon(E alto:numero; E ancho:numero; ES flo:numero; ES pap:numero)
+  comenzar
+    repetir alto
+      tomarFlores(flo)
+      tomarPapeles(pap)
+      mover
+    tomarFlores(flo)
+    tomarPapeles(pap)
+    derecha
+    repetir ancho
+      tomarFlores(flo)
+      tomarPapeles(pap)
+      mover
+    tomarFlores(flo)
+    tomarPapeles(pap)
+    Izquierda
+  fin
+areas
+  a1: AreaP(1,1,1,1)
+  a2: AreaP(2,1,6,21)
+  a3: AreaP(7,1,11,21)
+  a4: AreaP(12,1,16,21)
+robots
+  robot escalador
+  variables
+    alto,ancho,flo,pap,cant:numero
+    ok:boolean
+  comenzar
+    ancho:=1
+    cant:=0
+    repetir 4
+      Random(alto,1,5)
+      hacerEscalon(alto,ancho,flo,pap)
+      evaluar(pap,flo,ok)
+      si ok
+        cant:=cant+1
+    EnviarMensaje(cant,r0)
+  fin
+  robot jefe
+  variables
+    sum,cant:numero
+  comenzar
+    sum:=0
+    repetir 3
+      RecibirMensaje(cant,*)
+      sum:= sum+cant
+    Informar(sum)
+  fin
+variables
+  r0: jefe
+  r1: escalador
+  r2: escalador
+  r3: escalador
+comenzar
+  AsignarArea(r0,a1)
+  AsignarArea(r1,a2)
+  AsignarArea(r2,a3)
+  AsignarArea(r3,a4)
+  Iniciar(r0, 1,1)
+  Iniciar(r1,2,1)
+  Iniciar(r2,7,1)
+  Iniciar(r3,12,1)
+fin

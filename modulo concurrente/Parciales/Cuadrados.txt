@@ -1,0 +1,83 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarFlores(ES f: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f:=f+1
+  fin
+  proceso hacerCuadrado(E c:numero; ES f:numero)
+  comenzar
+    repetir 4
+      repetir c
+        juntarFlores(f)
+        mover
+      derecha
+  fin
+areas
+  a1: AreaP(1,1,7,21)
+  a2: AreaP(10,1,16,21)
+  a3: AreaP(20,1,26,21)
+  f: AreaP(100,100,100,100)
+robots
+  robot cuadra
+  variables
+    c,id,f:numero
+  comenzar
+    RecibirMensaje(id,rf)
+    RecibirMensaje(c,rf)
+    repetir 2
+      hacerCuadrado(c,f)
+      Pos(PosAv,PosCa+c+1)
+    hacerCuadrado(c,f)
+    EnviarMensaje(id,rf)
+    EnviarMensaje(f,rf)
+  fin
+  robot fisca
+  variables
+    ran,id,imax,fmax,f:numero
+  comenzar
+    fmax:=0
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    Random(ran,1,6)
+    EnviarMensaje(ran,r1)
+    Random(ran,1,6)
+    EnviarMensaje(ran,r2)
+    Random(ran,1,6)
+    EnviarMensaje(ran,r3)
+    repetir 3
+      RecibirMensaje(id,*)
+      si id=1
+        RecibirMensaje(f,r1)
+      sino
+        si id = 2
+          RecibirMensaje(f,r2)
+        sino
+          RecibirMensaje(f,r3)
+      si f>fmax
+        fmax:=f
+        imax:=id
+    Informar(imax)
+  fin
+variables
+  r1,r2,r3: cuadra
+  rf:fisca
+comenzar
+  AsignarArea(r1,a1)
+  AsignarArea(r2,a2)
+  AsignarArea(r3,a3)
+  
+  AsignarArea(rf,f)
+  
+  Iniciar(r1,1,1)
+  Iniciar(r2,10,1)
+  Iniciar(r3,20,1)
+  Iniciar(rf,100,100)
+fin

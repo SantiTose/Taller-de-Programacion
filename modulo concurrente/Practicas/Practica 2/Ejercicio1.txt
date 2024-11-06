@@ -1,0 +1,67 @@
+programa ejemplo
+procesos
+  proceso juntarFlores(ES flores:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso recorrerEsquinas(E cant:numero; ES flores:numero)
+  comenzar
+    repetir cant-1
+      juntarFlores(flores)
+      mover
+    juntarFlores(flores)
+  fin
+areas
+  a1: AreaP (1,1,1,10)
+  a2: AreaP (2,11,2,20)
+  a3: AreaP(100,100,100,100)
+robots
+  robot competidor
+  variables
+    flores,quiensoy,cant:numero
+  comenzar
+    flores:=0
+    RecibirMensaje(quiensoy,r3) 
+    RecibirMensaje(cant,r3) 
+    recorrerEsquinas(cant,flores)
+    EnviarMensaje(quiensoy,r3) 
+    EnviarMensaje(flores,r3) 
+  fin
+  robot organizador
+  variables
+    qmax,max,quien,flores:numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(10,r1)
+    
+    EnviarMensaje(2,r2)
+    EnviarMensaje(10,r2)
+    
+    max:=-1
+    qmax:=-1
+    repetir 2
+      RecibirMensaje(quien,*)
+      si(quien=1)
+        RecibirMensaje(flores,r1)
+      sino
+        RecibirMensaje(flores,r2)
+      si (flores>=max)
+        max:=flores
+        qmax:=quien
+    Informar('Soy el robotito ',quien)
+    Informar('Soy el ganador con estas flores', max)
+  fin
+variables
+  r1:competidor
+  r2:competidor
+  r3:organizador
+comenzar
+  AsignarArea(r1,a1)
+  AsignarArea(r2,a2)
+  AsignarArea(r3,a3)
+  Iniciar(r1,1,1)
+  Iniciar(r3,100,100)
+  Iniciar(r2,2,11)
+fin

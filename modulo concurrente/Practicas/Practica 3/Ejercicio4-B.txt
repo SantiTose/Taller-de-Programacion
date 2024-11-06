@@ -1,0 +1,98 @@
+programa ej4
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+  fin
+  proceso procesarEsquina(E miav:numero; E mica:numero; ES f:numero; ES ok:boolean)
+  comenzar
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    si HayFlorEnLaEsquina      
+      tomarFlor
+      f:=f+1
+    si HayFlorEnLaEsquina
+      ok:= V
+    sino
+      ok:= F    
+    Pos(miav,mica)
+    LiberarEsquina(10,10)
+    BloquearEsquina(11,11)
+    Pos(11,11)
+    si HayFlorEnLaBolsa
+      depositarFlor
+    Pos(miav,mica)
+    LiberarEsquina(11,11)   
+  fin
+  proceso enviarID
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso encontrarUltimo(ES ult:numero)
+  variables
+    id:numero
+  comenzar
+    repetir 4
+      RecibirMensaje(id,*)
+    ult:=id
+  fin
+areas
+  c: AreaC(10,10,11,11)
+  a0: AreaP(1,1,1,1)
+  a1: AreaP(9,9,9,9)
+  a2: AreaP(9,10,9,10)
+  a3: AreaP(9,11,9,11)
+  a4: AreaP(9,12,9,12)
+robots
+  robot fiscalizador
+  variables
+    ult:numero
+  comenzar
+    enviarID
+    encontrarUltimo(ult)
+    Pos(11,11)
+    juntarFlores
+    Informar(ult)
+  fin
+  robot compe
+  variables
+    id,f,miav,mica:numero
+    ok:boolean
+  comenzar
+    RecibirMensaje(id,rf)
+    miav:=PosAv
+    mica:=PosCa
+    ok:=V
+    mientras (ok)
+      procesarEsquina(miav,mica,f,ok)
+    EnviarMensaje(id,rf)
+  fin
+variables
+  rf:fiscalizador
+  r1:compe
+  r2:compe
+  r3:compe
+  r4:compe
+comenzar
+  AsignarArea(rf,c)
+  AsignarArea(r1,c)
+  AsignarArea(r2,c)
+  AsignarArea(r3,c)
+  AsignarArea(r4,c)
+  
+  AsignarArea(rf,a0)
+  AsignarArea(r1,a1)
+  AsignarArea(r2,a2)
+  AsignarArea(r3,a3)
+  AsignarArea(r4,a4)
+  
+  Iniciar(rf,1,1)
+  Iniciar(r1,9,9)
+  Iniciar(r2,9,10)
+  Iniciar(r3,9,11)
+  Iniciar(r4,9,12)
+fin

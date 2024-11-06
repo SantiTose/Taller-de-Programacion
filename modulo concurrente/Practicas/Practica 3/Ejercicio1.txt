@@ -1,0 +1,102 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarPapeles(ES papeles:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles:= papeles+1
+  fin
+  proceso juntarFlores(ES flores:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      flores:=flores+1
+  fin
+areas
+  ciudad1: AreaP(6,10,6,10)
+  ciudad2: AreaP(7,10,7,10)
+  ciudad3: AreaP(8,10,8,10)
+  ciudad4: AreaP(9,10,9,10)
+  ciudad: AreaC(10,10,10,10)
+  flores: AreaPC(1,1,5,10)
+  papeles: AreaPC(6,1,10,9)
+robots
+  robot florero
+  variables
+    av2,ca2,av,ca,flo,int:numero
+  comenzar
+    int:=5
+    av:=PosAv
+    ca:=PosCa
+    flo:=0
+    repetir int
+      Random(av2,1,5)
+      Random(ca2,1,10)
+      BloquearEsquina(av2,ca2)
+      Pos(av2,ca2)
+      juntarFlores(flo)
+      Pos(av,ca)
+      LiberarEsquina(av2,ca2)
+    repetir flo
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(10,10)
+    
+  fin
+  robot papelero
+  variables
+    av2,ca2,av,ca,pap,int:numero
+  comenzar
+    int:=3
+    av:=PosAv
+    ca:=PosCa
+    pap:=0
+    repetir int
+      Random(av2,6,10)
+      Random(ca2,1,9)
+      BloquearEsquina(av2,ca2)
+      Pos(av2,ca2)
+      juntarPapeles(pap)
+      Pos(av,ca)
+      LiberarEsquina(av2,ca2)
+    repetir pap
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      depositarPapel
+      Pos(av,ca)
+      LiberarEsquina(10,10)
+  fin
+variables
+  r1: florero
+  r2: florero
+  r3: papelero
+  r4: papelero
+comenzar
+  AsignarArea(r1,ciudad1)
+  AsignarArea(r2,ciudad2)
+  AsignarArea(r3,ciudad3)
+  AsignarArea(r4,ciudad4)
+  
+  AsignarArea(r1,flores)
+  AsignarArea(r2,flores)
+  AsignarArea(r3,papeles)
+  AsignarArea(r4,papeles)
+  
+  AsignarArea(r1,ciudad)
+  AsignarArea(r2,ciudad)
+  AsignarArea(r3,ciudad)
+  AsignarArea(r4,ciudad)
+  
+  Iniciar(r1,6,10)
+  Iniciar(r2,7,10)
+  Iniciar(r3,8,10)
+  Iniciar(r4,9,10)
+
+fin

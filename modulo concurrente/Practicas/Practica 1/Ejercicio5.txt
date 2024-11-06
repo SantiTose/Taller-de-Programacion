@@ -1,0 +1,92 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso juntarFlores
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+  fin
+  proceso dejarPapeles
+  comenzar
+    mientras HayPapelEnLaBolsa
+      depositarPapel
+  fin
+  proceso dejarFlores
+  comenzar
+    mientras HayFlorEnLaBolsa
+      depositarFlor
+  fin
+  proceso limpiarCalles(E num:numero; E cant:numero)
+  variables
+    av:numero
+  comenzar
+    derecha
+    av:=PosAv
+    repetir 2
+      repetir (cant-1)
+        juntarFlores
+        mover
+      juntarFlores
+      dejarFlores
+      Pos(av,num)
+  fin
+  proceso limpiarAvenida(E num:numero; E cant:numero)
+  variables
+    ca:numero
+  comenzar
+    ca:=PosCa
+    repetir 2
+      repetir (cant-1)
+        juntarPapeles
+        mover
+      juntarPapeles
+      dejarPapeles
+      Pos(num,ca)
+    
+  fin
+areas
+  a1: AreaP(1,75,15,80)
+  a2: AreaP(75,80,80,100)
+  a3: AreaP(70,10,100,15)
+  a4: AreaP(10,1,15,10)
+robots
+  robot r1
+  comenzar
+    limpiarCalles(80,15)
+  fin
+  robot r2
+  comenzar
+    limpiarAvenida(80,20)
+  fin
+  robot r3
+  comenzar
+    limpiarCalles(15,30)
+  fin
+  robot r4
+  comenzar
+    limpiarAvenida(15,10)
+  fin
+variables
+  rob1: r1
+  rob2: r2
+  rob3: r3
+  rob4: r4
+comenzar
+  AsignarArea(rob1,a1)
+  AsignarArea(rob3,a3)
+  AsignarArea(rob2,a2)
+  AsignarArea(rob4,a4)
+  Iniciar(rob1,1,75)
+  Iniciar(rob2,75,80)
+  Iniciar(rob3,70,10)
+  Iniciar(rob4,10,1)
+fin

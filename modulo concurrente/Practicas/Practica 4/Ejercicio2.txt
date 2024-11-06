@@ -1,0 +1,121 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarPapeles(ES p:numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      p:=p+1
+  fin
+  proceso dejarPapeles
+  comenzar
+    mientras HayPapelEnLaBolsa
+      depositarPapel
+  fin
+  proceso verificar(E num:numero; ES ok:boolean)
+  comenzar
+    repetir num
+      si HayPapelEnLaEsquina
+        tomarPapel
+        ok:= V
+      sino
+        ok:=F
+  fin
+  proceso recorrerAvenida(ES p:numero)
+  variables
+    miav,mica:numero
+  comenzar
+    miav:=PosAv
+    mientras PosCa<100
+      mica:=PosCa
+      juntarPapeles(p)
+      si ((PosCa<100) & (p>=5))
+        BloquearEsquina(50,50)
+        Pos(50,50)
+        dejarPapeles
+        p:=0
+        Pos(miav,mica)
+        LiberarEsquina(50,50)
+      sino
+        si PosCa<100
+          mover
+    juntarPapeles(p)
+    si ((PosCa<100) & (p>=5))
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      dejarPapeles
+      p:=0
+      Pos(miav,mica)
+      LiberarEsquina(50,50)
+    sino 
+      si PosCa<100
+        mover
+  fin
+  proceso papelesAleatorio(ES cant:numero)
+  variables
+    aux,p,miav,mica:numero
+    ok:boolean
+  comenzar
+    miav:=PosAv
+    mica:=PosCa
+    Random(aux,2,5)
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    verificar(aux,ok)
+    Pos(miav,mica)
+    LiberarEsquina(50,50)
+    si ~ok
+      cant:=cant+1
+    sino
+      cant:=0
+  fin
+areas
+  c: AreaC(50,50,50,50)
+  a1: AreaP(5,1,5,100)
+  a2: AreaP(10,1,10,100)
+  a3: AreaP(11,1,11,1)
+  a4: AreaP(12,1,12,1)
+robots
+  robot productor
+  variables
+    p:numero
+  comenzar
+    recorrerAvenida(p)
+  fin
+  robot consumidor
+  variables
+    cant:numero
+    ok:boolean
+  comenzar
+    ok:=V
+    cant:=0
+    mientras ok
+      papelesAleatorio(cant)
+      si cant=8
+        ok:=F
+  fin
+variables
+  r1: productor
+  r2: productor
+  r3: consumidor
+  r4: consumidor
+comenzar
+  AsignarArea(r1,c)
+  AsignarArea(r2,c)
+  AsignarArea(r3,c)
+  AsignarArea(r4,c)
+  
+  AsignarArea(r1,a1)
+  AsignarArea(r2,a2)
+  AsignarArea(r3,a3)
+  AsignarArea(r4,a4)
+  
+  Iniciar(r1,5,1)
+  Iniciar(r2,10,1)
+  Iniciar(r3,11,1)
+  Iniciar(r4,12,1)
+fin

@@ -1,0 +1,110 @@
+programa pra4
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+  proceso confirmar(E id:numero)
+  comenzar
+    si id =1
+      EnviarMensaje(V,r1)
+    sino
+      si id = 2
+        EnviarMensaje(V,r2)
+      sino
+        EnviarMensaje(V,r3)
+  fin
+areas
+  ser: AreaP(100,100,100,100)
+  c1: AreaPC(1,1,1,100)
+  c2: AreaPC(2,1,2,100)
+  c3: AreaPC(3,1,3,100)
+robots
+  robot cliente
+  variables
+    id,f,av,ca:numero
+    ok:boolean
+  comenzar
+    si PosAv = 1
+      id:=1
+    sino
+      si PosAv = 2
+        id:=2
+      sino
+        id:=3
+    av:=PosAv
+    mientras(PosCa < 100)
+      Random(f,1,4)
+      EnviarMensaje(id,rs)
+      EnviarMensaje(f,rs)
+      ca:=PosCa+1
+      EnviarMensaje(av,rs)
+      EnviarMensaje(ca,rs)
+      RecibirMensaje(ok,rs)
+      mover
+      juntarFlores
+      Pos(av,ca-1)
+      mientras ((HayFlorEnLaBolsa)&(PosCa<100))
+        depositarFlor
+        mover
+    EnviarMensaje(id,rs)
+    EnviarMensaje(0,rs)
+  fin
+  robot servidor
+  variables
+    id,f,av,ca,miav,mica,ceros:numero
+    ok:boolean
+  comenzar
+    miav:=PosAv
+    mica:=PosCa
+    ceros:=0
+    mientras (ceros < 3)
+      RecibirMensaje(id,*)
+      si id =1 
+        RecibirMensaje(f,r1)
+      sino
+        si id = 2
+          RecibirMensaje(f,r2)
+        sino
+          RecibirMensaje(f,r3)
+      si f <> 0
+        si id = 1
+          RecibirMensaje(av,r1)
+          RecibirMensaje(ca,r1)
+        sino
+          si id = 2
+            RecibirMensaje(av,r2)
+            RecibirMensaje(ca,r2)
+          sino
+            RecibirMensaje(av,r3)
+            RecibirMensaje(ca,r3)
+        Pos(av,ca)
+        repetir f
+          si HayFlorEnLaBolsa
+            depositarFlor
+        Pos(100,100)
+        confirmar(id)
+      sino
+        ceros:=ceros+1
+  fin
+variables
+  rs: servidor
+  r1: cliente
+  r2: cliente
+  r3: cliente
+comenzar
+  AsignarArea(rs,ser)
+  AsignarArea(rs,c1)
+  AsignarArea(rs,c2)
+  AsignarArea(rs,c3)
+  
+  AsignarArea(r1,c1)
+  AsignarArea(r2,c2)
+  AsignarArea(r3,c3)
+  
+  Iniciar(rs,100,100)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,1)
+  Iniciar(r3,3,1)
+fin

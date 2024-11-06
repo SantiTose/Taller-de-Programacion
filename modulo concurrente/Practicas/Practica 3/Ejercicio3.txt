@@ -1,0 +1,149 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso seleccionarEsquina(ES a:numero; ES c:numero)
+  variables
+    av,ca:numero
+  comenzar
+    Random(ca,2,10)
+    Random(av,2,10)
+    a:=av
+    c:=ca
+  fin
+  proceso Esquina(E miav:numero; E mica:numero; E av:numero; E ca:numero; ES f:numero; ES ok:boolean)
+  comenzar
+    BloquearEsquina(av,ca)
+    Pos(av,ca)
+    si HayFlorEnLaEsquina
+      tomarFlor
+      f:=f+1
+    si HayFlorEnLaEsquina
+      ok:= V
+    sino
+      ok:= F
+    Pos(miav,mica)
+    LiberarEsquina(av,ca)
+  fin
+  proceso EnviarID
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso seleccionar(E av:numero; E ca:numero)
+  variables
+    id:numero
+  comenzar
+    Random(id,1,4)
+    si id = 1
+      EnviarMensaje(V,r1)
+      EnviarMensaje(av,r1)
+      EnviarMensaje(ca,r1)
+    sino
+      si id = 2
+        EnviarMensaje(V,r2)
+        EnviarMensaje(av,r2)
+        EnviarMensaje(ca,r2)
+      sino
+        si id = 3
+          EnviarMensaje(V,r3)
+          EnviarMensaje(av,r3)
+          EnviarMensaje(ca,r3)
+        sino
+          EnviarMensaje(V,r4)
+          EnviarMensaje(av,r4)
+          EnviarMensaje(ca,r4)
+  fin
+  proceso apagar
+  comenzar
+    EnviarMensaje(F,r1)
+    EnviarMensaje(F,r2)
+    EnviarMensaje(F,r3)
+    EnviarMensaje(F,r4)
+  fin
+areas
+  c: AreaPC (2,2,10,10)
+  a0: AreaP(1,1,1,1)
+  a1: AreaP(2,1,2,1)
+  a2: AreaP(3,1,3,1)
+  a3: AreaP(4,1,4,1)
+  a4: AreaP(5,1,5,1)
+robots
+  robot reco
+  variables
+    id,flo,miav,mica,av,ca:numero
+    ok:boolean
+  comenzar
+    miav:=PosAv
+    mica:=PosCa
+    RecibirMensaje(id,rj)
+    RecibirMensaje(ok,rj)
+    mientras ok
+      RecibirMensaje(av,rj)
+      RecibirMensaje(ca,rj)
+      Esquina(miav,mica,av,ca,flo,ok)
+      EnviarMensaje(ok,rj)
+      RecibirMensaje(ok,rj)
+    EnviarMensaje(id,rj)
+    EnviarMensaje(flo,rj)
+  fin
+  robot jefe
+  variables
+    id,n,max,idmax,av,ca:numero
+    ok:boolean
+  comenzar
+    EnviarID
+    ok:= V
+    max:=0
+    seleccionarEsquina(av,ca)
+    mientras ok
+      seleccionar(av,ca)
+      RecibirMensaje(ok,*)
+    apagar
+    repetir 4
+      RecibirMensaje(id,*)
+      si id = 1
+        RecibirMensaje(n,r1)
+      sino
+        si id= 2
+          RecibirMensaje(n,r2)
+        sino
+          si id = 3
+            RecibirMensaje(n,r3)
+          sino
+            RecibirMensaje(n,r4)
+      si(max<n)
+        max:=n
+        idmax:=id
+    Informar(id)
+  fin
+variables
+  rj:jefe
+  r1:reco
+  r2:reco
+  r3:reco
+  r4:reco
+comenzar
+  AsignarArea(rj,a0)
+  
+  AsignarArea(r1,c)
+  AsignarArea(r2,c)
+  AsignarArea(r3,c)
+  AsignarArea(r4,c)
+  
+  AsignarArea(r1,a1)
+  AsignarArea(r2,a2)
+  AsignarArea(r3,a3)
+  AsignarArea(r4,a4)
+  
+  Iniciar(r1,2,1)
+  Iniciar(r2,3,1)
+  Iniciar(r3,4,1)
+  Iniciar(r4,5,1)
+  Iniciar(rj,1,1)
+fin

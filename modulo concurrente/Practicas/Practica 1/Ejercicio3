@@ -1,0 +1,89 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarPapeles(ES papeles:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles:= papeles+1
+  fin
+  proceso dejarPapeles(E papeles:numero)
+  comenzar
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+  proceso juntarFlores(ES flores:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso dejarFlores(E flores:numero)
+  comenzar
+    mientras (HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+  proceso compararValores(E pap:numero; E flo:numero; ES ok:boolean)
+  comenzar
+    ok:= F
+    si ((pap - flo) = 1)
+      ok:= V
+  fin
+  proceso hacerEscalon(E num:numero; ES flo:numero; ES pap:numero)
+  comenzar
+    repetir num
+      juntarFlores(flo)
+      dejarFlores(flo)
+      juntarPapeles(pap)
+      dejarPapeles(pap)
+      mover
+    derecha
+    repetir num
+      juntarFlores(flo)
+      dejarFlores(flo)
+      juntarPapeles(pap)
+      dejarPapeles(pap)
+      mover
+    repetir 3 
+      derecha
+  fin
+areas
+  lado1: AreaPC (22,6,32,16)
+  lado2: AreaPC (17,10,27,20)
+  lado3: AreaPC (12,14,22,24)
+robots
+  robot r1
+  variables
+    ok: boolean
+    flores: numero
+    papeles: numero
+    int : numero
+    cant:numero
+  comenzar
+    int:=0
+    cant:= 0
+    repetir 4
+      int:=int+1
+      hacerEscalon(int,flores,papeles)
+      compararValores(papeles,flores,ok)
+      si ok
+        cant:=cant+1
+    Informar(cant)
+  fin
+variables
+  rob1: r1
+  rob2: r1
+  rob3:r1
+comenzar
+  AsignarArea(rob1,lado1)
+  AsignarArea(rob2,lado2)
+  AsignarArea(rob3,lado3)
+  Iniciar(rob1,22,6)
+  Iniciar(rob2,17,10)
+  Iniciar(rob3,12,14)
+
+fin

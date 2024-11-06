@@ -1,0 +1,186 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso Izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f:=f+1
+  fin
+  proceso dejarFlores(E f:numero)
+  comenzar
+    repetir f
+      depositarFlor
+  fin
+  proceso hacerAreaLateralDrc
+  variables
+    av,ca,ca1,f:numero
+  comenzar
+    Izquierda
+    ca1:=PosCa
+    repetir 9
+      juntarFlores(f)
+      si( PosCa = 19)
+        ca:=PosCa-1
+      sino  
+        ca:= PosCa+1
+      av:=PosAv
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      dejarFlores(f)
+      Pos(PosAv+1,ca1)
+      LiberarEsquina(av,ca)
+  fin
+  proceso hacerAreaLateralIzq
+  variables
+    av,ca,ca1,f:numero
+  comenzar
+    derecha
+    ca1:=PosCa
+    repetir 9
+      juntarFlores(f)
+      av:=PosAv
+      si( PosCa = 19)
+        ca:=PosCa-1
+      sino  
+        ca:= PosCa+1
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      dejarFlores(f)
+      Pos(PosAv+1,PosCa-1)
+      LiberarEsquina(av,ca)
+  fin
+areas
+  a1: AreaP(9,19,9,19)
+  a3: AreaP(9,20,9,20)
+  a2: AreaP(9,21,9,21)
+  
+  a4: AreaP(31,19,31,19)
+  a6: AreaP(31,20,31,20)
+  a5: AreaP(31,21,31,21)
+  
+  b1: AreaP(10,19,19,19)
+  b2: AreaP(10,21,19,21)
+    
+  b3: AreaP(21,21,30,21)
+  b4: AreaP(21,19,30,19)
+  
+  c1: AreaPC(10,20,19,20)
+  c2: AreaPC(21,20,30,20)
+  
+  d: AreaPC(20,20,20,20)
+  
+  e: AreaP(20,18,20,18)
+robots
+  robot lateral
+  variables
+    f,eq:numero
+  comenzar
+    si PosAv=9
+      eq:=0
+      Pos(PosAv+1,PosCa)
+      hacerAreaLateralIzq
+      EnviarMensaje(eq,rcA)
+    sino
+      eq:=1
+      Pos(PosAv-1,PosCa)
+      hacerAreaLateralDrc
+      EnviarMensaje(eq,rcB)
+  fin
+  robot capitan
+  variables
+    i,eq,f,miav,mica:numero
+  comenzar
+    f:=0
+    si PosAv = 10
+      eq:=0
+    sino
+      eq:=1
+    repetir 2 
+      RecibirMensaje(i,*)
+    repetir 9
+      juntarFlores(f)
+    miav:=PosAv
+    mica:=PosCa
+    BloquearEsquina(20,20)
+    Pos(20,20)
+    dejarFlores(f)
+    Pos(miav,mica)
+    LiberarEsquina(20,20)
+    EnviarMensaje(eq,rf)
+    EnviarMensaje(f,rf)
+  fin  
+  robot fisca
+  variables
+    id,f1,f2,gan:numero
+  comenzar
+    repetir 2
+      RecibirMensaje(id,*)
+      si id = 0
+        RecibirMensaje(f1,r3)
+        gan:=0
+      sino
+        RecibirMensaje(f2,r6)
+        gan:=1
+    Informar(gan)
+    si r1<r2
+      gan:=1
+    sino
+      gan:=0
+    Informar(gan)
+  fin
+variables
+  r1:lateral
+  r2:lateral
+  r3:capitan
+  
+  r4:lateral
+  r5:lateral
+  r6:capitan
+  
+  rf:fisca
+comenzar
+  AsignarArea(r1,a1)
+  AsignarArea(r2,a2)
+  AsignarArea(r3,a3)
+  
+  AsignarArea(r4,a4)
+  AsignarArea(r5,a5)
+  AsignarArea(r6,a6)
+  
+  AsignarArea(r1,b1)
+  AsignarArea(r2,b2)
+  
+  AsignarArea(r5,b3)
+  AsignarArea(r4,b4)
+  
+  AsignarArea(r1,c1)
+  AsignarArea(r2,c1)
+  AsignarArea(r3,c1)
+  
+  AsignarArea(r4,c2)
+  AsignarArea(r5,c2)
+  AsignarArea(r6,c2)
+  
+  AsignarArea(r3,d)
+  AsignarArea(r6,d)
+    
+  AsignarArea(rf,e)
+  
+  Iniciar(r1,9,19)
+  Iniciar(r2,9,21)
+  Iniciar(r3,9,20)
+  Iniciar(r4,31,19)
+  Iniciar(r5,31,21)
+  Iniciar(r6,31,20)
+  Iniciar(rf,20,18)
+fin

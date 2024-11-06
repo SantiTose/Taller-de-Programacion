@@ -1,0 +1,126 @@
+programa ej4
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+  fin
+  proceso juntarPapeles
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso hacerCuadrante(E lado:numero;E id:numero)
+  comenzar
+    repetir 4
+      repetir lado
+        si id=1
+          juntarFlores
+        sino
+          si id= 2
+            juntarFlores
+            juntarPapeles
+          sino
+            juntarPapeles
+        mover
+      si id=1
+        juntarFlores
+      sino
+        si id= 2
+          juntarFlores
+          juntarPapeles
+        sino
+          juntarPapeles
+      derecha
+  fin
+  proceso enviarID
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso enviar(E n:numero; E id:numero)
+  comenzar
+    si id = 1
+      EnviarMensaje(n,r1)
+    sino
+      si id = 2
+        EnviarMensaje(n,r2)
+      sino
+        EnviarMensaje(n,r3)
+  fin
+areas
+  a0: AreaP(1,1,1,1)
+  a1: AreaP(1,20,100,20)
+  a2: AreaP(1,21,100,21)
+  a3: AreaP(1,22,100,22)
+  c: AreaPC(2,2,16,16)
+robots
+  robot fiscalizador
+  variables
+    id,i:numero
+  comenzar
+    i:=0
+    enviarID
+    EnviarMensaje(6,r1)
+    EnviarMensaje(10,r2)
+    EnviarMensaje(7,r3)
+    repetir 3
+      RecibirMensaje(id,*)
+      enviar(20+i,id)
+      i:=i+1
+  fin
+  robot compe
+  variables
+    id,lado:numero
+  comenzar
+    RecibirMensaje(id,rf)
+    RecibirMensaje(lado,rf)
+    hacerCuadrante(lado,id)
+    EnviarMensaje(id,rf)
+    RecibirMensaje(lado,rf)
+    Pos(1,lado)
+    derecha
+    mientras (HayFlorEnLaBolsa | HayPapelEnLaBolsa)
+      si HayFlorEnLaBolsa
+        depositarFlor
+      si HayPapelEnLaBolsa
+        depositarPapel
+      si PosAv<100
+        mover
+  fin
+variables
+  rf:fiscalizador
+  r1:compe
+  r2:compe
+  r3:compe
+comenzar
+  AsignarArea(rf,c)
+  AsignarArea(r1,c)
+  AsignarArea(r2,c)
+  AsignarArea(r3,c)
+  
+  AsignarArea(rf,a0)
+  
+  AsignarArea(r1,a1)
+  AsignarArea(r2,a1)
+  AsignarArea(r2,a1)
+  
+  AsignarArea(r2,a2)
+  AsignarArea(r2,a2)
+  AsignarArea(r3,a2)
+  
+  AsignarArea(r2,a3)
+  AsignarArea(r2,a3)
+  AsignarArea(r2,a3)
+  
+  Iniciar(rf,1,1)
+  Iniciar(r1,2,2)
+  Iniciar(r2,5,5)
+  Iniciar(r3,9,9)
+fin

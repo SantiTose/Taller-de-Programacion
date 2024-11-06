@@ -1,0 +1,107 @@
+programa ej4
+procesos
+  proceso procesarEsquina( ES p:numero; ES ok:boolean)
+  variables
+    miav,mica:numero
+  comenzar
+    miav:=PosAv
+    mica:=PosCa
+    BloquearEsquina(11,11)
+    Pos(11,11)
+    si HayPapelEnLaEsquina      
+      tomarPapel
+      p:=p+1
+    si HayPapelEnLaEsquina
+      ok:= V
+    sino
+      ok:= F
+    Pos(miav,mica)
+    LiberarEsquina(11,11) 
+  fin
+  proceso enviarID
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso encontrarPrimero(ES pri:numero)
+  variables
+    id,max,num:numero
+  comenzar
+    max:=0
+    repetir 4
+      RecibirMensaje(id,*)
+      si id = 1
+        RecibirMensaje(num,r1)
+      sino
+        si id = 2
+          RecibirMensaje(num,r2)
+        sino
+          si id = 3
+            RecibirMensaje(num,r3)
+          sino
+            RecibirMensaje(num,r4)
+      si(num>max)
+        max:=num
+        pri:=id
+  fin
+areas
+  c: AreaPC(11,11,11,11)
+  a0: AreaP(1,1,1,1)
+  a1: AreaP(4,1,4,100)
+  a2: AreaP(6,1,6,100)
+  a3: AreaP(8,1,8,100)
+  a4: AreaP(10,1,10,100)
+robots
+  robot fiscalizador
+  variables
+    pri:numero
+  comenzar
+    enviarID
+    encontrarPrimero(pri)
+    Informar(pri)
+  fin
+  robot compe
+  variables
+    id,p,miav,mica,cant:numero
+    ok:boolean
+  comenzar
+    RecibirMensaje(id,rf)
+    miav:=PosAv
+    mica:=PosCa
+    ok:=V
+    cant:=0
+    mientras (ok)
+      procesarEsquina(p,ok)
+      si ok 
+        mover
+        cant:=cant+1
+    EnviarMensaje(id,rf)
+    EnviarMensaje(cant,rf)
+  fin
+variables
+  rf:fiscalizador
+  r1:compe
+  r2:compe
+  r3:compe
+  r4:compe
+comenzar
+  AsignarArea(rf,c)
+  AsignarArea(r1,c)
+  AsignarArea(r2,c)
+  AsignarArea(r3,c)
+  AsignarArea(r4,c)
+  
+  AsignarArea(rf,a0)
+  AsignarArea(r1,a1)
+  AsignarArea(r2,a2)
+  AsignarArea(r3,a3)
+  AsignarArea(r4,a4)
+  
+  Iniciar(rf,1,1)
+  Iniciar(r1,4,1)
+  Iniciar(r2,6,1)
+  Iniciar(r3,8,1)
+  Iniciar(r4,10,1)
+fin

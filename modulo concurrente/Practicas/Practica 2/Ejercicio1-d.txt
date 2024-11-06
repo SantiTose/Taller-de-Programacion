@@ -1,0 +1,91 @@
+programa ejemplo
+procesos
+  proceso juntarFlores(ES flores:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso recorrerEsquinas(ES flores:numero)
+  comenzar
+    repetir 9
+      juntarFlores(flores)
+      mover
+    juntarFlores(flores)
+  fin
+areas
+  a1: AreaP (1,1,1,10)
+  a2: AreaP (2,11,2,20)
+  a3: AreaP (3,21,3,30)
+  a4: AreaP (4,31,4,40)
+  a5: AreaP (5,41,5,50)
+  a6: AreaP (6,51,6,60)
+  a7: AreaP(2,1,2,1)
+robots
+  robot fiscalizador
+  variables
+    flores,max,quien,qmax:numero
+  comenzar
+    max:=0
+    qmax:=0
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+    EnviarMensaje(5,r5)
+    EnviarMensaje(6,r6)
+    repetir 6
+      RecibirMensaje(quien,*)
+      si quien = 1
+        RecibirMensaje(flores,r1)
+      si quien =2
+        RecibirMensaje(flores,r2)
+      si quien =3
+        RecibirMensaje(flores,r3)
+      si quien = 4
+        RecibirMensaje(flores,r4)
+      si quien = 5
+        RecibirMensaje(flores,r5)
+      si quien = 6
+        RecibirMensaje(flores,r6)
+      si flores>max
+        max:=flores
+        qmax := quien
+    Informar(max)
+    Informar(qmax)
+  fin
+  robot competidor
+  variables
+    flores,quiensoy:numero
+  comenzar
+    flores:=0 
+    RecibirMensaje(quiensoy,r7)
+    recorrerEsquinas(flores)
+    EnviarMensaje(quiensoy,r7)
+    EnviarMensaje(flores,r7)
+  fin
+variables
+  r1:competidor
+  r2:competidor
+  r3:competidor
+  r4:competidor
+  r5:competidor
+  r6:competidor
+  r7:fiscalizador
+comenzar
+  AsignarArea(r1,a1)
+  AsignarArea(r2,a2)
+  AsignarArea(r3,a3)    
+  AsignarArea(r4,a4)
+  AsignarArea(r5,a5)
+  AsignarArea(r6,a6)
+  AsignarArea(r7,a7)
+  Iniciar(r7,2,1)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,11)
+  Iniciar(r3,3,21)
+  Iniciar(r4,4,31)
+  Iniciar(r5,5,41)
+  Iniciar(r6,6,51)
+
+fin

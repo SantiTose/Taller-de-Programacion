@@ -1,0 +1,82 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ej3
+procesos
+  proceso tomarFlores(ES flores:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina    
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso tomarPapeles(ES papeles:numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      papeles:=papeles+1
+  fin
+  proceso recorrerEsquinasA( ES pap:numero)
+  comenzar  
+    repetir 9
+      tomarPapeles(pap)
+      mover
+    tomarPapeles(pap)
+  fin
+  proceso recorrerEsquinasB( ES flo:numero)
+  comenzar
+    repetir 9
+      tomarFlores(flo)
+      mover
+    tomarFlores(flo)
+  fin
+areas
+  c1: AreaP(1,1,10,1)
+  c2: AreaP(11,1,20,1)
+  c3: AreaP(1,5,10,5)
+  c4: AreaP(11,5,20,5)
+robots
+  robot tipoA
+  variables
+    pap:numero
+  comenzar
+    pap:=0
+    derecha
+    si(PosAv = 1)
+      recorrerEsquinasA(pap)
+      EnviarMensaje(pap,a2)
+    sino
+      RecibirMensaje(pap,a1)
+      recorrerEsquinasA(pap)
+      Informar(pap)
+  fin
+  robot tipoB
+  variables
+    flo:numero
+  comenzar
+    flo:=0
+    derecha
+    si(PosAv = 1)
+      recorrerEsquinasB(flo)
+      EnviarMensaje(flo,b2)
+    sino
+      RecibirMensaje(flo,b1)
+      recorrerEsquinasB(flo)
+      Informar(flo)
+  fin
+variables
+  a1: tipoA
+  a2: tipoA
+  b1: tipoB
+  b2: tipoB
+comenzar
+  AsignarArea(a1,c1)
+  AsignarArea(a2,c2)
+  AsignarArea(b1,c3)
+  AsignarArea(b2,c4)
+  Iniciar(a1,1,1)
+  Iniciar(a2,11,1)
+  Iniciar(b1,1,5)
+  Iniciar(b2,11,5)
+fin

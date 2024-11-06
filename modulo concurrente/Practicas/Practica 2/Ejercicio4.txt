@@ -1,0 +1,150 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f:=f+1
+  fin
+  proceso juntarPapeles(ES p:numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      p:=p+1
+  fin
+  proceso limpiarEsquina(ES t:numero)
+  variables
+    p,f:numero
+  comenzar
+    p:=0
+    f:=0
+    juntarFlores(f)
+    juntarPapeles(p)
+    t:=p+f
+  fin
+  proceso completarEsquina(ES t:numero)
+  variables
+    miav,mica,av,ca:numero
+  comenzar
+    miav:=PosAv
+    mica:=PosCa
+    Random(av,25,75)
+    Random(ca,25,75)
+    Pos(av,ca)
+    limpiarEsquina(t)
+    Pos(miav,mica)
+  fin
+  proceso enviarRandom(E id:numero)
+  comenzar
+    si id =1
+      EnviarMensaje(V,r1)
+    si id= 2
+      EnviarMensaje(V,r2)
+    si id = 3
+      EnviarMensaje(V,r3)
+    si id = 4
+      EnviarMensaje(V,r4)
+  fin
+  proceso enviarFinal(E maxid:numero)
+  comenzar
+    si(maxid=1)
+      EnviarMensaje(V,r1)
+      EnviarMensaje (F,r2)
+      EnviarMensaje (F,r3)
+      EnviarMensaje (F,r4)
+    si(maxid=2)
+      EnviarMensaje (F,r1)
+      EnviarMensaje(V,r2)
+      EnviarMensaje (F,r3)
+      EnviarMensaje (F,r4)
+    si(maxid=3)
+      EnviarMensaje (F,r1)
+      EnviarMensaje (F,r2)
+      EnviarMensaje(V,r3)
+      EnviarMensaje (F,r4)
+    sino 
+      EnviarMensaje (F,r1)
+      EnviarMensaje (F,r2)
+      EnviarMensaje (F,r3)
+      EnviarMensaje(V,r4)
+  fin
+  proceso terminoCiclo
+  comenzar
+    EnviarMensaje(F,r1)
+    EnviarMensaje(F,r2)
+    EnviarMensaje(F,r3)
+    EnviarMensaje(F,r4)
+  fin
+areas
+  ciudad: AreaPC (25,25,75,75)
+  a1: AreaP(1,1,1,1)
+  a2: AreaP(25,1,25,1)
+  a3: AreaP(30,1,30,1)
+  a4: AreaP(35,1,35,1)
+  a5: AreaP(40,1,40,1)
+robots
+  robot fiscalizador
+  variables
+    id,tmax,idmax,num:numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+    tmax:=0
+    repetir 10
+      Random(id,1,4)
+      enviarRandom(id)
+      RecibirMensaje(id,*)
+      RecibirMensaje(num,*)
+      si tmax< num
+        tmax:=num
+        id:=idmax
+    terminoCiclo
+    enviarFinal(idmax)
+  fin
+  robot competidor
+  variables
+    id,t:numero
+    ok:boolean
+  comenzar
+    RecibirMensaje(id,rf)
+    RecibirMensaje(ok,rf)
+    mientras ok
+      completarEsquina(t)
+      EnviarMensaje(id,rf)
+      EnviarMensaje(t,rf)
+      RecibirMensaje(ok,rf)
+      
+    RecibirMensaje(ok,rf)
+    si ok
+      Pos(50,50)
+  fin
+variables
+  rf: fiscalizador
+  r1: competidor
+  r2: competidor
+  r3: competidor
+  r4: competidor
+comenzar
+  AsignarArea(rf,a1)
+  AsignarArea(r1,a2)
+  AsignarArea(r2,a3)
+  AsignarArea(r3,a4)
+  AsignarArea(r4,a5)
+  AsignarArea(r1,ciudad)
+  AsignarArea(r2,ciudad)
+  AsignarArea(r3,ciudad)
+  AsignarArea(r4,ciudad)
+  
+  Iniciar(rf,1,1)
+  Iniciar(r1,25,1)
+  Iniciar(r2,30,1)
+  Iniciar(r3,35,1)
+  Iniciar(r4,40,1)
+fin
