@@ -1,0 +1,203 @@
+Program parcial2024Atenciones;
+type
+	rango_mes= 1..12;
+	rango_diagnostico = 'L'..'P';
+
+atencion = record
+	dni:integer;
+	codigo:rango_diagnostico;
+end;
+
+arbol = ^nodo;
+nodo = record
+	dato:atencion;
+	HI:arbol;
+	HD:arbol;
+end;
+
+vAtenciones = array [rango_mes] of arbol;
+
+atencionLeida = record
+	matricula_med:integer;
+	mes:rango_mes;
+	at:atencion;
+end; 
+
+
+{PUNTO A GENERAR VECTOR}
+
+procedure generarVector(var v:vAtenciones);
+
+	procedure inicializarVector(var v:vAtenciones);
+	var
+		i:integer;
+	begin
+		for i:=1 to 12 do
+			v[i]:=nil;
+	end;
+
+	procedure leerAtencion(var a:atencionLeida);
+	var
+		vCodigo:array [0..4] of char = ('L','M','N','O','P');
+	Begin
+		a.matricula_med:= 3000 + Random(3400 - 3000 + 1);
+		if(a.matricula_med <> 3000)then begin
+			a.mes:= Random(12)+1;
+			a.at.dni:= 5000 + Random(5500 - 5000+1);
+			a.at.codigo:= vCodigo[Random(5)];
+		end;
+	End;
+	
+	procedure insertarElementoA(var a:arbol; at:atencion);
+	begin
+		if(a = nil)then begin
+			new(a);
+			a^.dato:=at;
+			a^.HI:=nil;
+			a^.HD:=nil;
+		end
+		else begin
+			if(a^.dato.dni > at.dni)then
+				insertarElementoA(a^.HI,at)
+			else
+				insertarElementoA(a^.HD,at);
+		end;
+	end;
+	
+
+var
+	a:atencionLeida;
+begin
+	inicializarVector(v);
+	leerAtencion(a);
+	while(a.matricula_med <> 3000)do begin {para que cargue menos el vector}
+		insertarElementoA(v[a.mes], a.at);
+		leerAtencion(a);
+	end;
+end;
+
+
+{MODULO DE TEST}
+procedure Informar(v:vAtenciones);
+	
+	procedure InformarDatosDelMes(a:arbol; mes:integer);
+	
+		 procedure InformarDatos (a: arbol);
+		 Begin
+			if (a <> nil) then begin 
+				InformarDatos(a^.HI);
+				writeln;
+				writeln ('DNI: ', a^.dato.dni);
+				writeln ('CODIGO DE DIAGNOSTICO: ', a^.dato.codigo);
+				writeln;
+				InformarDatos(a^.HD);
+			end;		
+		End;
+	Begin
+		writeln;
+		writeln ('-----         MES ',  mes , '       ----->');
+		writeln;
+		InformarDatos(a);
+		writeln;
+		writeln ('//////////////////////////////////////////////////////////');
+		writeln;
+	End;
+var
+	i:integer;
+begin
+	for i:=1 to 12 do
+		InformarDatosDelMes(v[i], i);
+		writeln;
+end;
+
+
+{Punto B}
+
+function obtenerElMesConMasAtenciones(v:vAtenciones):integer;
+
+	function contarAtencionesRecursivo(a:arbol):integer;
+	Begin
+		if(a = nil)then
+			contarAtencionesRecursivo:=0
+		else
+			contarAtencionesRecursivo:= 1 + contarAtencionesRecursivo(a^.HI) + contarAtencionesRecursivo(a^.HD);
+	End;
+	
+	procedure actualizarMaximo(cantidad,mes:integer; var max,mesMax:integer);
+	Begin
+		if(cantidad > max)then begin
+			max:=cantidad;
+			mesMax:=mes;
+		end;
+	End;
+var
+	i,cant,max,mesMax:integer;
+begin
+	max:= -1;
+	mesMax:=-1;
+	for i:= 1 to 12 do begin
+		cant:=0;
+		cant:=contarAtencionesRecursivo(v[i]);
+		actualizarMaximo(cant,i,max,mesMax);
+	end;
+	obtenerElMesConMasAtenciones:=mesMax;
+end;
+
+{Punto C}
+function obtenerPaciente(v:vAtenciones; unDni:integer):boolean;
+	function buscar(a:arbol; unDni:integer):boolean;
+	Begin
+		if(a = nil)then
+			buscar:= false
+		else begin
+			if(a^.dato.dni = unDni)then
+				buscar:=true
+			else
+				if(a^.dato.dni > unDni)then
+					buscar:=buscar(a^.HI,unDni)
+				else
+					buscar:=buscar(a^.HD,unDni);
+		end;
+	End;
+var
+	ok:boolean;
+	i:integer;
+begin
+	ok:= false;
+	i:=1;
+	while( i <= 12)and(not(ok))do begin
+		if(buscar(v[i],unDni))then
+			ok:=true;
+		i:=i+1;
+	end;
+	obtenerPaciente:=ok;
+end;
+
+{Programa Principal}
+var
+	v:vAtenciones;
+	resultado,unDni:integer;
+	encontre:boolean;
+begin
+	randomize;
+	generarVector(v);
+	Informar(v);
+	writeln;
+	writeln;
+	resultado:=obtenerElMesConMasAtenciones(v);
+	writeln;
+	writeln;
+	writeln('el mes con mayor cantidad de atenciones es ', resultado);
+	writeln;
+	writeln;
+	writeln('ingrese un dni: ');
+	readln(unDni);
+	encontre:=obtenerPaciente(v,unDni);
+	writeln;
+	writeln;
+	if(encontre)then
+		writeln('el paciente fue atendido')
+	else
+		writeln('el paciente no fue atendido');
+	
+end.
